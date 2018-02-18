@@ -9,6 +9,7 @@ function doughnut(matrix) {
 
   let headers = matrix[0].map((_, i) => ({name: i, size: 0}));
   for (let i = 0; i < headers.length; i++) {
+    headers[i].column = headers[i];
     headers[i].up = headers[i].down = headers[i];
     headers[i].left = i - 1 < 0 ? root : headers[i - 1];
     headers[i].right = i + 1 >= headers.length ? root : headers[i + 1];
@@ -17,21 +18,22 @@ function doughnut(matrix) {
   root.right = headers[0];
 
   for (let row = 0; row < matrix.length; row++) {
-    lastThisRow = null;
+    firstThisRow = null;
     for (let col = 0; col < matrix[row].length; col++) {
       if (matrix[row][col]) {
         let cell = {column: headers[col]};
 
-        // Insert cell right of lastThisRow
-        if (lastThisRow === null) {
-          lastThisRow = cell;
+        // Insert cell left of firstThisRow (i.e. last)
+        if (firstThisRow === null) {
+          firstThisRow = cell;
+          cell.left = cell;
+          cell.right = cell;
         } else {
-          lastThisRow.right.left = cell;
-          lastThisRow.right = cell;
+          cell.right = firstThisRow;
+          cell.left = firstThisRow.left;
+          firstThisRow.left.right = cell;
+          firstThisRow.left = cell;
         }
-        cell.right = lastThisRow;
-        cell.left = lastThisRow;
-        lastThisRow = cell;
 
         // Insert cell above the header (i.e. last)
         headers[col].size++;
@@ -44,4 +46,69 @@ function doughnut(matrix) {
   }
 
   return root;
+}
+
+function dlx(matrix) {
+  let root = doughnut(matrix);
+
+  let O = [];
+
+  function search(k) {
+    if (root.right === root) {
+      console.log("Found a solution");
+      return;
+    }
+
+    // Choose a column
+    let c = root.right;
+    if (c.size == 0) {
+      console.log("Branch found no solution");
+      return;
+    }
+
+    cover_col(c);
+
+    for (let r = c.down; r !== c; r = r.down) {
+      O[k] = r;
+      for (let j = r.right; j !== r; j = j.right) {
+        cover_col(j.column);
+      }
+      search(k + 1);
+      r = O[k];
+      c = r.column;
+      for (let j = r.left; j !== r; j = j.left) {
+        uncover_col(j.column);
+      }
+    }
+
+    uncover_col(c);
+  }
+
+  function cover_col(c) {
+    c.right.left = c.left;
+    c.left.right = c.right;
+    for (let i = c.down; i !== c; i = i.down) {
+      for (let j = i.right; j !== i; j = j.right) {
+        j.down.up = j.up;
+        j.up.down = j.down;
+        j.column.size--;
+      }
+    }
+  }
+
+  function uncover_col(c) {
+    for (let i = c.up; i !== c; i = i.up) {
+      for (let j = i.left; j !== i; j = j.left) {
+        j.column.size++;
+        j.down.up = j.up;
+        j.up.down = j.down;
+      }
+    }
+    c.right.left = c;
+    c.left.right = c;
+  }
+
+  search(root, 0);
+
+  return "Done.";
 }

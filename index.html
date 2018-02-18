@@ -21,8 +21,7 @@ window.onload = function() {
   output.value = "";
 
   run.onclick = function() {
-    output.value = parseMatrix(input.value).map(x => x.join(' ')).join('\n');
-    console.log(doughnut(parseMatrix(input.value)));
+    output.value = dlx(parseMatrix(input.value));
   }
 }
     </script>
