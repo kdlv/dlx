@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Exact cover</title>
+    <style>
+textarea {
+  margin: 2mm 0 2mm 0;
+  width: 90%;
+  height: 10em;
+}
+    </style>
+    <script src="exact-cover.js"></script>
+    <script>
+window.onload = function() {
+  const input = document.getElementById("input");
+  const run = document.getElementById("run");
+  const output = document.getElementById("output");
+
+  run.focus();
+  output.value = "";
+
+  run.onclick = function() {
+    output.value = parseMatrix(input.value).map(x => x.join(' ')).join('\n');
+    console.log(doughnut(parseMatrix(input.value)));
+  }
+}
+    </script>
+  </head>
+  <body>
+    <div>
+      <textarea id="input" wrap="off">
+0  0  1  0  1  1  0
+1  0  0  1  0  0  1
+0  1  1  0  0  1  0
+1  0  0  1  0  0  0
+0  1  0  0  0  0  1
+0  0  0  1  1  0  1
+      </textarea>
+    </div>
+    <div>
+      <button id="run">Run</button>
+    </div>
+      <textarea id="output" wrap="off"></textarea>
+    <div>
+    </div>
+  </body>
+</html>
