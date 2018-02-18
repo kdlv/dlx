@@ -1,32 +1,3 @@
-// class DLXData {
-//   constructor(left, right, up, down, column) {
-//     this.left = left;
-//     this.right = right
-//     this.up = up;
-//     this.down = down;
-//     this.column = column;
-//   }
-// }
-
-// class DLXColumn {
-//   constructor(left, right, up, down, column, name, size) {
-//     this.left = left;
-//     this.right = right
-//     this.up = up;
-//     this.down = down;
-//     this.column = column;
-//     this.name = name;
-//     this.size = size;
-//   }
-// }
-
-// class DLXRoot {
-//   constructor(left, right) {
-//     this.left = left;
-//     this.right = right
-//   }
-// }
-
 function parseMatrix(str) {
   return str.split(/\n+/).filter(l => !l.match(/^ *$/)).map(l => l.split(/ +/)).map(
     l => l.map(c => c === "0" ? false : true)
