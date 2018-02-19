@@ -5,9 +5,9 @@ function parseMatrix(str) {
 }
 
 function doughnut(matrix) {
-  let root = {};
+  let root = {type: 'root'};
 
-  let headers = matrix[0].map((_, i) => ({name: i, size: 0}));
+  let headers = matrix[0].map((_, i) => ({type: 'header', name: i, size: 0}));
   for (let i = 0; i < headers.length; i++) {
     headers[i].column = headers[i];
     headers[i].up = headers[i].down = headers[i];
@@ -21,7 +21,7 @@ function doughnut(matrix) {
     firstThisRow = null;
     for (let col = 0; col < matrix[row].length; col++) {
       if (matrix[row][col]) {
-        let cell = {column: headers[col]};
+        let cell = {type: 'cell', column: headers[col]};
 
         // Insert cell left of firstThisRow (i.e. last)
         if (firstThisRow === null) {
@@ -55,16 +55,22 @@ function dlx(matrix) {
 
   function search(k) {
     if (root.right === root) {
-      console.log("Found a solution");
+      console.log("Found a solution:");
+      for (let row of O) {
+        let cols = {};
+        r = row;
+        do {
+          cols[r.column.name] = true;
+          r = r.right;
+        } while (r !== row);
+        let line = matrix[0].map((_, i) => cols.hasOwnProperty(i) ? '1' : '0').join(' ');
+        console.log(line);
+      }
       return;
     }
 
     // Choose a column
     let c = root.right;
-    if (c.size == 0) {
-      console.log("Branch found no solution");
-      return;
-    }
 
     cover_col(c);
 
@@ -75,6 +81,7 @@ function dlx(matrix) {
       }
       search(k + 1);
       r = O[k];
+      O.pop(); // XXX: ???
       c = r.column;
       for (let j = r.left; j !== r; j = j.left) {
         uncover_col(j.column);
@@ -108,7 +115,8 @@ function dlx(matrix) {
     c.left.right = c;
   }
 
-  search(root, 0);
+  search(0);
 
+  console.log("Done.");
   return "Done.";
 }
