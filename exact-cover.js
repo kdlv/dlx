@@ -80,8 +80,7 @@ function dlx(matrix) {
         cover_col(j.column);
       }
       search(k + 1);
-      r = O[k];
-      O.pop(); // XXX: ???
+      r = O.pop();
       c = r.column;
       for (let j = r.left; j !== r; j = j.left) {
         uncover_col(j.column);
