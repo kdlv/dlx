@@ -21,7 +21,7 @@ function doughnut(matrix) {
     firstThisRow = null;
     for (let col = 0; col < matrix[row].length; col++) {
       if (matrix[row][col]) {
-        let cell = {type: 'cell', column: headers[col]};
+        let cell = {/* _y: row, _x: col, */ type: 'cell', column: headers[col]};
 
         // Insert cell left of firstThisRow (i.e. last)
         if (firstThisRow === null) {
@@ -107,8 +107,8 @@ function dlx(matrix) {
     for (let i = c.up; i !== c; i = i.up) {
       for (let j = i.left; j !== i; j = j.left) {
         j.column.size++;
-        j.down.up = j.up;
-        j.up.down = j.down;
+        j.down.up = j;
+        j.up.down = j;
       }
     }
     c.right.left = c;
