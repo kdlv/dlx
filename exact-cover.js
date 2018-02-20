@@ -76,6 +76,10 @@ function dlx(matrix) {
 
     // Choose a column
     let c = root.right;
+    for (let j = c.right; j !== root; j = j.right) {
+      if (j.size < c.size)
+        c = j;
+    }
 
     cover_col(c);
 
