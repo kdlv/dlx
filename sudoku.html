@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Sudoku solver</title>
+    <style>
+table {
+  border: 3px solid black;
+  border-collapse: collapse;
+  margin: 2mm 0 2mm 0;
+}
+
+td {
+  height: 2em;
+  width: 2em;
+  border: 1px solid black;
+  padding: 0;
+  margin: 0;
+}
+
+td.right {
+  border-right: 2px solid black;
+}
+td.bottom {
+  border-bottom: 2px solid black;
+}
+
+input {
+  border: none;
+  text-align: center;
+  font-size: 1.5em;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+    </style>
+    <script src="exact-cover.js"></script>
+    <script>
+window.onload = function() {
+  const sudoku = document.getElementById('sudoku');
+
+  for (let row = 1; row <= 9; row++) {
+    let tr = document.createElement('tr');
+    sudoku.appendChild(tr);
+    for (let col = 1; col <= 9; col++) {
+      let td = document.createElement('td');
+      if (row % 3 == 0)
+        td.classList.add('bottom');
+      if (col % 3 == 0)
+        td.classList.add('right');
+      td.id = `R${row}C${col}`;
+      tr.appendChild(td);
+
+      let txt = document.createElement('input');
+      txt.setAttribute('type', 'text');
+      txt.setAttribute('maxlength', 1);
+      td.appendChild(txt);
+    }
+  }
+}
+    </script>
+  </head>
+  <body>
+    <div>
+      <table id="sudoku">
+      </table>
+    </div>
+    <div>
+      <button id="run">Solve</button>
+    </div>
+  </body>
+</html>
