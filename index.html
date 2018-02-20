@@ -9,6 +9,9 @@ textarea {
   width: 90%;
   height: 10em;
 }
+#output {
+  height: 50em;
+}
     </style>
     <script src="exact-cover.js"></script>
     <script>
@@ -21,7 +24,12 @@ window.onload = function() {
   output.value = "";
 
   run.onclick = function() {
-    output.value = dlx(parseMatrix(input.value));
+    let {nodes, updates, solutions} = dlx(parseMatrix(input.value));
+    output.value = `${solutions.length} solutions, ${nodes} nodes, ${updates} updates`;
+    solutions.forEach(s => {
+      output.value += '\n\n';
+      output.value += s.map(row => row.map(b => +b).join(' ')).join('\n');
+    });
   }
 }
     </script>

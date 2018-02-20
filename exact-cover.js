@@ -4,11 +4,13 @@ function parseMatrix(str) {
   );
 }
 
-function doughnut(matrix) {
+function doughnut(matrix, stats) {
   let root = {type: 'root'};
+  stats.nodes++;
 
   let headers = matrix[0].map((_, i) => ({type: 'header', name: i, size: 0}));
   for (let i = 0; i < headers.length; i++) {
+    stats.nodes++;
     headers[i].column = headers[i];
     headers[i].up = headers[i].down = headers[i];
     headers[i].left = i - 1 < 0 ? root : headers[i - 1];
@@ -22,6 +24,7 @@ function doughnut(matrix) {
     for (let col = 0; col < matrix[row].length; col++) {
       if (matrix[row][col]) {
         let cell = {/* _y: row, _x: col, */ type: 'cell', column: headers[col]};
+        stats.nodes++;
 
         // Insert cell left of firstThisRow (i.e. last)
         if (firstThisRow === null) {
@@ -49,13 +52,15 @@ function doughnut(matrix) {
 }
 
 function dlx(matrix) {
-  let root = doughnut(matrix);
+  let results = {nodes: 0, updates: 0, solutions: []};
+
+  let root = doughnut(matrix, results);
 
   let O = [];
 
   function search(k) {
     if (root.right === root) {
-      console.log("Found a solution:");
+      let solution = [];
       for (let row of O) {
         let cols = {};
         r = row;
@@ -63,9 +68,9 @@ function dlx(matrix) {
           cols[r.column.name] = true;
           r = r.right;
         } while (r !== row);
-        let line = matrix[0].map((_, i) => cols.hasOwnProperty(i) ? '1' : '0').join(' ');
-        console.log(line);
+        solution.push(matrix[0].map((_, i) => cols.hasOwnProperty(i)));
       }
+      results.solutions.push(solution);
       return;
     }
 
@@ -91,10 +96,12 @@ function dlx(matrix) {
   }
 
   function cover_col(c) {
+    results.updates++;
     c.right.left = c.left;
     c.left.right = c.right;
     for (let i = c.down; i !== c; i = i.down) {
       for (let j = i.right; j !== i; j = j.right) {
+        results.updates++;
         j.down.up = j.up;
         j.up.down = j.down;
         j.column.size--;
@@ -116,6 +123,5 @@ function dlx(matrix) {
 
   search(0);
 
-  console.log("Done.");
-  return "Done.";
+  return results;
 }
