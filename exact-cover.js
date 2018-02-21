@@ -6,47 +6,47 @@ function parseMatrix(str) {
   );
 }
 
-function doughnut(matrix, stats) {
+function genMatrix(columns, rows) {
   let root = {type: 'root'};
-  stats.nodes++;
+  root.left = root.right = root;
 
-  let headers = matrix[0].map((_, i) => ({type: 'header', name: i, size: 0}));
-  for (let i = 0; i < headers.length; i++) {
-    stats.nodes++;
-    headers[i].column = headers[i];
-    headers[i].up = headers[i].down = headers[i];
-    headers[i].left = i - 1 < 0 ? root : headers[i - 1];
-    headers[i].right = i + 1 >= headers.length ? root : headers[i + 1];
-  }
-  root.left = headers[headers.length - 1];
-  root.right = headers[0];
+  columns.forEach(name => {
+    let header = {type: 'header', name, size: 0};
+    header.up = header.down = header;
+    header.right = root;
+    header.left = root.left;
+    root.left.right = header;
+    root.left = header;
+  });
 
-  for (let row = 0; row < matrix.length; row++) {
+  let col = root.right;
+  for (let row of rows) {
     let firstThisRow = null;
-    for (let col = 0; col < matrix[row].length; col++) {
-      if (matrix[row][col]) {
-        let cell = {/* _y: row, _x: col, */ type: 'cell', column: headers[col]};
-        stats.nodes++;
-
-        // Insert cell left of firstThisRow (i.e. last)
-        if (firstThisRow === null) {
-          firstThisRow = cell;
-          cell.left = cell;
-          cell.right = cell;
-        } else {
-          cell.right = firstThisRow;
-          cell.left = firstThisRow.left;
-          firstThisRow.left.right = cell;
-          firstThisRow.left = cell;
-        }
-
-        // Insert cell above the header (i.e. last)
-        headers[col].size++;
-        cell.up = headers[col].up;
-        cell.down = headers[col];
-        headers[col].up.down = cell;
-        headers[col].up = cell;
+    for (let colName of row) {
+      while (col.name != colName) {
+        col = col.right;
       }
+
+      let cell = {type: 'cell', column: col};
+
+      // Insert cell left of firstThisRow (i.e. last)
+      if (firstThisRow === null) {
+        firstThisRow = cell;
+        cell.left = cell;
+        cell.right = cell;
+      } else {
+        cell.right = firstThisRow;
+        cell.left = firstThisRow.left;
+        firstThisRow.left.right = cell;
+        firstThisRow.left = cell;
+      }
+
+      // Insert cell above the header (i.e. last)
+      col.size++;
+      cell.up = col.up;
+      cell.down = col;
+      col.up.down = cell;
+      col.up = cell;
     }
   }
 
@@ -54,9 +54,12 @@ function doughnut(matrix, stats) {
 }
 
 function dlx(matrix) {
-  let results = {nodes: 0, updates: 0, solutions: []};
+  let results = {nodes: 1, updates: 0, solutions: []};
 
-  let root = doughnut(matrix, results);
+  let root = matrix;
+  for (let r = root.right; r !== root; r = r.right) {
+    results.nodes += r.size + 1;
+  }
 
   let O = [];
 
@@ -64,13 +67,13 @@ function dlx(matrix) {
     if (root.right === root) {
       let solution = [];
       for (let row of O) {
-        let cols = {};
+        let cols = [];
         let r = row;
         do {
-          cols[r.column.name] = true;
+          cols.push(r.column.name);
           r = r.right;
         } while (r !== row);
-        solution.push(matrix[0].map((_, i) => cols.hasOwnProperty(i)));
+        solution.push(cols);
       }
       results.solutions.push(solution);
       return;
