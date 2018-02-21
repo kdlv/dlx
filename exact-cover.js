@@ -1,3 +1,5 @@
+'use strict';
+
 function parseMatrix(str) {
   return str.split(/\n+/).filter(l => !l.match(/^ *$/)).map(l => l.split(/ +/)).map(
     l => l.map(c => c === "0" ? false : true)
@@ -20,7 +22,7 @@ function doughnut(matrix, stats) {
   root.right = headers[0];
 
   for (let row = 0; row < matrix.length; row++) {
-    firstThisRow = null;
+    let firstThisRow = null;
     for (let col = 0; col < matrix[row].length; col++) {
       if (matrix[row][col]) {
         let cell = {/* _y: row, _x: col, */ type: 'cell', column: headers[col]};
@@ -63,7 +65,7 @@ function dlx(matrix) {
       let solution = [];
       for (let row of O) {
         let cols = {};
-        r = row;
+        let r = row;
         do {
           cols[r.column.name] = true;
           r = r.right;
