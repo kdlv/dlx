@@ -87,20 +87,17 @@ function dlx(matrix) {
     }
 
     cover_col(c);
-
     for (let r = c.down; r !== c; r = r.down) {
-      O[k] = r;
+      O.push(r);
       for (let j = r.right; j !== r; j = j.right) {
         cover_col(j.column);
       }
       search(k + 1);
-      r = O.pop();
-      c = r.column;
+      O.pop();
       for (let j = r.left; j !== r; j = j.left) {
         uncover_col(j.column);
       }
     }
-
     uncover_col(c);
   }
 
