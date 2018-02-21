@@ -39,9 +39,12 @@ input {
     <script>
 'use strict';
 
+let cells;
+
 window.onload = function() {
   const sudoku = document.getElementById('sudoku');
 
+  cells = [];
   for (let row = 1; row <= 9; row++) {
     let tr = document.createElement('tr');
     sudoku.appendChild(tr);
@@ -51,13 +54,14 @@ window.onload = function() {
         td.classList.add('bottom');
       if (col % 3 == 0)
         td.classList.add('right');
-      td.id = `R${row}C${col}`;
       tr.appendChild(td);
 
       let txt = document.createElement('input');
+      txt.id = `R${row}C${col}`;
       txt.setAttribute('type', 'text');
       txt.setAttribute('maxlength', 1);
       td.appendChild(txt);
+      cells.push(txt);
     }
   }
 }
