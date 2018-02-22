@@ -30,9 +30,9 @@ window.onload = function() {
 
     let {nodes, updates, solutions} = dlx(genMatrix(
       matrix[0].map((_, i) => i),
-      matrix.map(row =>
-        row.map((val, i) => val ? i : null).filter(x => x != null)
-      )
+      matrix.map(row => ({
+        cols: row.map((val, i) => val ? i : null).filter(x => x != null)
+      }))
     ));
 
     output.value = `${solutions.length} solutions, ${nodes} nodes, ${updates} updates\n\n` +

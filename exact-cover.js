@@ -6,6 +6,8 @@ function parseMatrix(str) {
   );
 }
 
+class ConflictingRowsError extends Error {}
+
 function genMatrix(columns, rows) {
   let root = {type: 'root'};
   root.left = root.right = root;
@@ -19,10 +21,12 @@ function genMatrix(columns, rows) {
     root.left = header;
   });
 
+  let included = [];
+
   let col = root.right;
-  for (let row of rows) {
+  for (let {include, cols} of rows) {
     let firstThisRow = null;
-    for (let colName of row) {
+    for (let colName of cols) {
       while (col.name != colName) {
         col = col.right;
       }
@@ -34,6 +38,9 @@ function genMatrix(columns, rows) {
         firstThisRow = cell;
         cell.left = cell;
         cell.right = cell;
+        if (include) {
+          included.push(cell);
+        }
       } else {
         cell.right = firstThisRow;
         cell.left = firstThisRow.left;
@@ -50,7 +57,42 @@ function genMatrix(columns, rows) {
     }
   }
 
+  for (let row of included) {
+    let j = row;
+    do {
+      let c = j.column;
+      if (c.removedBy) {
+        let err = new ConflictingRowsError("Tried to include conflicting rows");
+        err.row1 = getRowColumns(c.removedBy);
+        err.row2 = getRowColumns(row);
+        err.column = c.name;
+        throw err;
+      }
+      c.removedBy = row;
+      c.right.left = c.left;
+      c.left.right = c.right;
+      for (let i = c.down; i !== c; i = i.down) {
+        for (let j = i.right; j !== i; j = j.right) {
+          j.down.up = j.up;
+          j.up.down = j.down;
+          j.column.size--;
+        }
+      }
+      j = j.right;
+    } while (j !== row);
+  }
+
   return root;
+}
+
+function getRowColumns(row) {
+  let cols = [];
+  let r = row;
+  do {
+    cols.push(r.column.name);
+    r = r.right;
+  } while (r !== row);
+  return cols;
 }
 
 function dlx(matrix) {
