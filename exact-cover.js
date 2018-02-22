@@ -107,17 +107,7 @@ function dlx(matrix) {
 
   function search(k) {
     if (root.right === root) {
-      let solution = [];
-      for (let row of O) {
-        let cols = [];
-        let r = row;
-        do {
-          cols.push(r.column.name);
-          r = r.right;
-        } while (r !== row);
-        solution.push(cols);
-      }
-      results.solutions.push(solution);
+      results.solutions.push(O.map(row => getRowColumns(row)));
       return;
     }
 
