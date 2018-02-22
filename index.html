@@ -35,13 +35,12 @@ window.onload = function() {
       )
     ));
 
-    output.value = `${solutions.length} solutions, ${nodes} nodes, ${updates} updates`;
-    solutions.forEach(s => {
-      output.value += '\n\n';
-      output.value += s.map(row =>
+    output.value = `${solutions.length} solutions, ${nodes} nodes, ${updates} updates\n\n` +
+      solutions.map(solution =>
+        solution.map(row =>
           matrix[0].map((_, i) => row.includes(i) ? '1' : '0').join(' ')
-      ).join('\n');
-    });
+        ).join('\n')
+      ).join('\n\n');
   }
 }
     </script>
