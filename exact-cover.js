@@ -6,6 +6,16 @@ function parseMatrix(str) {
   );
 }
 
+function equalOneLevel(a, b) {
+  if (!(a instanceof Object && b instanceof Object))
+    return a === b;
+  for (let p of new Set(Object.keys(a).concat(Object.keys(b)))) {
+    if (!a[p] === b[p])
+      return false;
+  }
+  return true;
+}
+
 class ConflictingRowsError extends Error {}
 
 function genMatrix(columns, rows) {
@@ -27,7 +37,7 @@ function genMatrix(columns, rows) {
   for (let {include, cols} of rows) {
     let firstThisRow = null;
     for (let colName of cols) {
-      while (col.name != colName) {
+      while (!equalOneLevel(col.name, colName)) {
         col = col.right;
       }
 
