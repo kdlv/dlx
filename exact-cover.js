@@ -22,14 +22,14 @@ function genMatrix(columns, rows) {
   let root = {type: 'root'};
   root.left = root.right = root;
 
-  columns.forEach(name => {
+  for (let name of columns) {
     let header = {type: 'header', name, size: 0};
     header.up = header.down = header;
     header.right = root;
     header.left = root.left;
     root.left.right = header;
     root.left = header;
-  });
+  };
 
   let included = [];
 
