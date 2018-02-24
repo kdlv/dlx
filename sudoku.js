@@ -68,6 +68,7 @@ window.onload = function() {
       for (let rowCols of solution) {
         let {row, col, digit} = Object.assign(...rowCols);
         cells[row * 9 + col].value = digit;
+        cells[row * 9 + col].classList.add('found');
       }
     }
   }
