@@ -10,7 +10,7 @@ function equalOneLevel(a, b) {
   if (!(a instanceof Object && b instanceof Object))
     return a === b;
   for (let p of new Set(Object.keys(a).concat(Object.keys(b)))) {
-    if (!a[p] === b[p])
+    if (a[p] !== b[p])
       return false;
   }
   return true;
