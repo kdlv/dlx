@@ -4,18 +4,34 @@ let sudoku;
 let run;
 let clear;
 let status;
+let prev;
+let next;
+
 let cells;
+
+let solutions = null;
+let curSolution = null;
 
 window.onload = function() {
   sudoku = document.getElementById('sudoku');
   run = document.getElementById('run');
   clear = document.getElementById('clear');
   status = document.getElementById('status');
+  next = document.getElementById('next');
+  prev = document.getElementById('prev');
 
   createSudokuGrid();
 
   run.onclick = solveSudoku;
   clear.onclick = clearSudoku;
+  next.onclick = () => {
+    curSolution = Math.min(curSolution + 1, solutions.length - 1)
+    update();
+  }
+  prev.onclick = () => {
+    curSolution = Math.max(curSolution - 1, 0)
+    update();
+  }
 }
 
 function createSudokuGrid() {
@@ -90,20 +106,14 @@ function solveSudoku() {
     return;
   }
 
-  let {nodes, updates, solutions} = dlx(matrix);
+  ({solutions} = dlx(matrix));
+  curSolution = 0;
 
-  for (let solution of solutions.slice(0, 1)) {
-    for (let rowCols of solution) {
-      let {row, col, digit} = Object.assign(...rowCols);
-      cells[row * 9 + col].value = digit;
-      cells[row * 9 + col].classList.add('found');
-    }
-  }
-
-  status.textContent = `Solutions: ${solutions.length}`;
+  update();
 }
 
 function onCellInput(e) {
+  solutions = null;
   switch (e.target.value.length) {
     case 0:
       break;
@@ -133,10 +143,23 @@ function onCellInput(e) {
 }
 
 function update() {
+  status.textContent = '';
+
   cells.forEach(c => c.classList.remove('found', 'conflict'));
+
+  if (solutions && curSolution != null) {
+    for (let rowCols of solutions[curSolution]) {
+      let {row, col, digit} = Object.assign({}, ...rowCols);
+      cells[row * 9 + col].value = digit;
+      cells[row * 9 + col].classList.add('found');
+    }
+
+    status.textContent = `Solution ${curSolution + 1}/${solutions.length}`;
+  }
 }
 
 function clearSudoku() {
+  solutions = null;
   status.textContent = '';
   cells.forEach(c => {
     c.classList.remove('found', 'conflict');
