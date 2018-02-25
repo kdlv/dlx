@@ -151,14 +151,18 @@ function update() {
   cells.forEach(c => c.classList.remove('found', 'conflict'));
 
   if (solutions && curSolution != null) {
-    for (let rowCols of solutions[curSolution]) {
+    for (let rowCols of solutions[curSolution] || []) {
       let {row, col, digit} = Object.assign({}, ...rowCols);
       cells[row * 9 + col].value = digit;
       cells[row * 9 + col].classList.add('found');
     }
 
-    status.textContent = `Solution ${curSolution + 1}/${solutions.length}`;
-    controls.classList.toggle('solved', true);
+    if (solutions.length > 0) {
+      status.textContent = `Solution ${curSolution + 1}/${solutions.length}`;
+      controls.classList.toggle('solved', true);
+    } else {
+      status.textContent = `No solutions`;
+    }
   }
 }
 
