@@ -1,6 +1,7 @@
 'use strict';
 
 let sudoku;
+let controls;
 let run;
 let clear;
 let status;
@@ -14,6 +15,7 @@ let curSolution = null;
 
 window.onload = function() {
   sudoku = document.getElementById('sudoku');
+  controls = document.getElementById('controls');
   run = document.getElementById('run');
   clear = document.getElementById('clear');
   status = document.getElementById('status');
@@ -144,6 +146,7 @@ function onCellInput(e) {
 
 function update() {
   status.textContent = '';
+  controls.classList.toggle('solved', false);
 
   cells.forEach(c => c.classList.remove('found', 'conflict'));
 
@@ -155,10 +158,12 @@ function update() {
     }
 
     status.textContent = `Solution ${curSolution + 1}/${solutions.length}`;
+    controls.classList.toggle('solved', true);
   }
 }
 
 function clearSudoku() {
+  controls.classList.toggle('solved', false);
   solutions = null;
   status.textContent = '';
   cells.forEach(c => {

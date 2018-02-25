@@ -36,3 +36,11 @@ table#sudoku {
 #sudoku input.conflict {
   background: #faa;
 }
+
+#prev, #next {
+  visibility: hidden;
+}
+
+.solved #prev, .solved #next {
+  visibility: visible;
+}
