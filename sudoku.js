@@ -1,10 +1,14 @@
 'use strict';
 
+let sudoku;
+let run;
+let status;
 let cells;
 
 window.onload = function() {
-  const sudoku = document.getElementById('sudoku');
-  const run = document.getElementById('run');
+  sudoku = document.getElementById('sudoku');
+  run = document.getElementById('run');
+  status = document.getElementById('status');
 
   createSudokuGrid();
 
@@ -36,6 +40,12 @@ function createSudokuGrid() {
 }
 
 function solveSudoku() {
+  let cellsFilled = cells.filter(c => /^[1-9]$/.test(c.value)).length
+  if (cellsFilled < 20) {
+    status.textContent = `Enter at least 20 digits (${20 - cellsFilled} remaining)`;
+    return;
+  }
+
   let matrix;
   try {
     matrix = genMatrix(
@@ -86,6 +96,8 @@ function solveSudoku() {
       cells[row * 9 + col].classList.add('found');
     }
   }
+
+  status.textContent = `Solutions: ${solutions.length}`;
 }
 
 function onCellInput(e) {
@@ -113,4 +125,10 @@ function onCellInput(e) {
         e.target.value = '';
       break;
   }
+
+  update();
+}
+
+function update() {
+  cells.forEach(c => c.classList.remove('found', 'conflict'));
 }
