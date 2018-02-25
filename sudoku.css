@@ -28,6 +28,11 @@ table#sudoku {
   width: 100%;
   height: 100%;
 }
+
 #sudoku input.found {
   color: limegreen;
+}
+
+#sudoku input.conflict {
+  background: #faa;
 }

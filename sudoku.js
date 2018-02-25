@@ -36,34 +36,46 @@ function createSudokuGrid() {
 }
 
 function solveSudoku() {
-  let matrix = genMatrix(
-    function*() {
-      for (let row = 0; row < 9; row++)
-        for (let col = 0; col < 9; col++)
-          yield {row, col};
-      for (let row = 0; row < 9; row++)
-        for (let digit = 1; digit <= 9; digit++)
-          yield {row, digit};
-      for (let col = 0; col < 9; col++)
-        for (let digit = 1; digit <= 9; digit++)
-          yield {col, digit};
-      for (let box = 0; box < 9; box++)
-        for (let digit = 1; digit <= 9; digit++)
-          yield {box, digit};
-    }(),
-    function*() {
-      for (let row = 0; row < 9; row++)
+  let matrix;
+  try {
+    matrix = genMatrix(
+      function*() {
+        for (let row = 0; row < 9; row++)
+          for (let col = 0; col < 9; col++)
+            yield {row, col};
+        for (let row = 0; row < 9; row++)
+          for (let digit = 1; digit <= 9; digit++)
+            yield {row, digit};
         for (let col = 0; col < 9; col++)
           for (let digit = 1; digit <= 9; digit++)
-            yield {
-              include: cells[row * 9 + col].value == digit,
-              cols: [{row, col}, {row, digit}, {col, digit}, {
-                box: Math.floor(row / 3) * 3 + Math.floor(col / 3),
-                digit
-              }]
-            };
-    }()
-  );
+            yield {col, digit};
+        for (let box = 0; box < 9; box++)
+          for (let digit = 1; digit <= 9; digit++)
+            yield {box, digit};
+      }(),
+      function*() {
+        for (let row = 0; row < 9; row++)
+          for (let col = 0; col < 9; col++)
+            for (let digit = 1; digit <= 9; digit++)
+              yield {
+                include: cells[row * 9 + col].value == digit,
+                cols: [{row, col}, {row, digit}, {col, digit}, {
+                  box: Math.floor(row / 3) * 3 + Math.floor(col / 3),
+                  digit
+                }]
+              };
+      }()
+    );
+  }
+  catch (e) {
+    if (!(e instanceof ConflictingRowsError))
+      throw e;
+    let r1 = Object.assign(...e.row1);
+    let r2 = Object.assign(...e.row2);
+    cells[r1.row * 9 + r1.col].classList.add('conflict');
+    cells[r2.row * 9 + r2.col].classList.add('conflict');
+    return;
+  }
 
   let {nodes, updates, solutions} = dlx(matrix);
 
