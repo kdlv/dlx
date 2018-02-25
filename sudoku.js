@@ -2,17 +2,20 @@
 
 let sudoku;
 let run;
+let clear;
 let status;
 let cells;
 
 window.onload = function() {
   sudoku = document.getElementById('sudoku');
   run = document.getElementById('run');
+  clear = document.getElementById('clear');
   status = document.getElementById('status');
 
   createSudokuGrid();
 
   run.onclick = solveSudoku;
+  clear.onclick = clearSudoku;
 }
 
 function createSudokuGrid() {
@@ -131,4 +134,12 @@ function onCellInput(e) {
 
 function update() {
   cells.forEach(c => c.classList.remove('found', 'conflict'));
+}
+
+function clearSudoku() {
+  status.textContent = '';
+  cells.forEach(c => {
+    c.classList.remove('found', 'conflict');
+    c.value = '';
+  });
 }
