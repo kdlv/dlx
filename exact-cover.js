@@ -6,14 +6,8 @@ function parseMatrix(str) {
   );
 }
 
-function equalOneLevel(a, b) {
-  if (!(a instanceof Object && b instanceof Object))
-    return a === b;
-  for (let p of new Set(Object.keys(a).concat(Object.keys(b)))) {
-    if (a[p] !== b[p])
-      return false;
-  }
-  return true;
+function getColumnIdentifier(colname) {
+  return JSON.stringify(Object.entries(colname).sort(x => x[0]));
 }
 
 class ConflictingRowsError extends Error {}
@@ -22,6 +16,7 @@ function genMatrix(columns, rows) {
   let root = {type: 'root'};
   root.left = root.right = root;
 
+  let headers = {};
   for (let name of columns) {
     let header = {type: 'header', name, size: 0};
     header.up = header.down = header;
@@ -29,6 +24,7 @@ function genMatrix(columns, rows) {
     header.left = root.left;
     root.left.right = header;
     root.left = header;
+    headers[getColumnIdentifier(name)] = header;
   };
 
   let included = [];
@@ -37,9 +33,7 @@ function genMatrix(columns, rows) {
   for (let {include, cols} of rows) {
     let firstThisRow = null;
     for (let colName of cols) {
-      while (!equalOneLevel(col.name, colName)) {
-        col = col.right;
-      }
+      let col = headers[getColumnIdentifier(colName)];
 
       let cell = {type: 'cell', column: col};
 
