@@ -49,9 +49,10 @@ function createSudokuGrid() {
         td.classList.add('right');
       tr.appendChild(td);
 
-      let txt = document.createElement('input');
+      let txt = document.createElement('div');
       txt.id = `R${row}C${col}`;
-      txt.setAttribute('type', 'text');
+      txt.classList.add('cell');
+      txt.setAttribute('contenteditable', true);
       txt.oninput = onCellInput;
 
       td.appendChild(txt);
@@ -61,7 +62,7 @@ function createSudokuGrid() {
 }
 
 function solveSudoku() {
-  let cellsFilled = cells.filter(c => /^[1-9]$/.test(c.value)).length
+  let cellsFilled = cells.filter(c => /^[1-9]$/.test(c.textContent)).length
   if (cellsFilled < 20) {
     status.textContent = `Enter at least 20 digits (${20 - cellsFilled} remaining)`;
     return;
@@ -89,7 +90,7 @@ function solveSudoku() {
           for (let col = 0; col < 9; col++)
             for (let digit = 1; digit <= 9; digit++)
               yield {
-                include: cells[row * 9 + col].value == digit,
+                include: cells[row * 9 + col].textContent == digit,
                 cols: [{row, col}, {row, digit}, {col, digit}, {
                   box: Math.floor(row / 3) * 3 + Math.floor(col / 3),
                   digit
@@ -116,28 +117,32 @@ function solveSudoku() {
 
 function onCellInput(e) {
   solutions = null;
-  switch (e.target.value.length) {
+  switch (e.target.textContent.length) {
     case 0:
       break;
 
     case 81:
-      [...e.target.value].forEach((d, i) => {
+      [...e.target.textContent].forEach((d, i) => {
         cells[i].classList.remove('found');
         if (/^[1-9]$/.test(d))
-          cells[i].value = d;
+          cells[i].textContent = d;
         else
-          cells[i].value = '';
+          cells[i].textContent = '';
       });
       e.target.blur();
       break;
 
     default:
       e.target.classList.remove('found');
-      let val = e.target.value[e.target.selectionEnd - 1];
+      let val = e.target.textContent;
+      let sel = window.getSelection();
+      if (sel.focusNode.parentNode === e.target && sel.rangeCount > 0) {
+        val = e.target.textContent[sel.getRangeAt(0).endOffset - 1];
+      }
       if (/^[1-9]$/.test(val))
-        e.target.value = val;
+        e.target.textContent = val;
       else
-        e.target.value = '';
+        e.target.textContent = '';
       break;
   }
 
@@ -153,7 +158,7 @@ function update() {
   if (solutions && curSolution != null) {
     for (let rowCols of solutions[curSolution] || []) {
       let {row, col, digit} = Object.assign({}, ...rowCols);
-      cells[row * 9 + col].value = digit;
+      cells[row * 9 + col].textContent = digit;
       cells[row * 9 + col].classList.add('found');
     }
 
@@ -172,6 +177,6 @@ function clearSudoku() {
   status.textContent = '';
   cells.forEach(c => {
     c.classList.remove('found', 'conflict');
-    c.value = '';
+    c.textContent = '';
   });
 }

@@ -5,11 +5,10 @@ table#sudoku {
 }
 
 #sudoku td {
-  height: 2em;
-  width: 2em;
+  height: 2rem;
+  width: 2rem;
   border: 1px solid black;
   padding: 0;
-  margin: 0;
 }
 
 #sudoku td.right {
@@ -19,21 +18,20 @@ table#sudoku {
   border-bottom: 2px solid black;
 }
 
-#sudoku input {
-  border: none;
-  text-align: center;
+#sudoku .cell {
+  font-family: Arial;
   font-size: 1.5em;
-  padding: 0;
-  margin: 0;
+  text-align: center;
+  line-height: 2rem;
   width: 100%;
   height: 100%;
 }
 
-#sudoku input.found {
+#sudoku .cell.found {
   color: limegreen;
 }
 
-#sudoku input.conflict {
+#sudoku .cell.conflict {
   background: #faa;
 }
 
