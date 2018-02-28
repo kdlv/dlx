@@ -54,6 +54,7 @@ function createSudokuGrid() {
       txt.classList.add('cell');
       txt.setAttribute('contenteditable', true);
       txt.oninput = onCellInput;
+      txt.onkeydown = onCellKeyDown;
 
       td.appendChild(txt);
       cells.push(txt);
@@ -147,6 +148,30 @@ function onCellInput(e) {
   }
 
   update();
+}
+
+function onCellKeyDown(e) {
+  function nav(x, y) {
+    e.preventDefault();
+    let [, row, col] = e.target.id.match(/^R(\d)C(\d)$/);
+    row = ((+row - 1 + y + 9) % 9) + 1;
+    col = ((+col - 1 + x + 9) % 9) + 1;
+    document.getElementById(`R${row}C${col}`).focus();
+  }
+  switch (e.key) {
+    case 'ArrowUp':
+      nav(0, -1);
+      break;
+    case 'ArrowDown':
+      nav(0, 1);
+      break;
+    case 'ArrowLeft':
+      nav(-1, 0);
+      break;
+    case 'ArrowRight':
+      nav(1, 0);
+      break;
+  }
 }
 
 function update() {
