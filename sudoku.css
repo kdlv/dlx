@@ -27,6 +27,12 @@ table#sudoku {
   height: 100%;
 }
 
+#sudoku .cell:focus {
+  outline: none;
+  background: lightblue;
+  caret-color: transparent;
+}
+
 #sudoku .cell.found {
   color: limegreen;
 }
