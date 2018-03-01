@@ -28,7 +28,7 @@ table#sudoku {
 }
 
 #sudoku .cell:focus {
-  outline: none;
+  outline: 1px solid black;
   background: lightblue;
   caret-color: transparent;
 }
