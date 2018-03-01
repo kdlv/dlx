@@ -7,7 +7,9 @@ function parseMatrix(str) {
 }
 
 function getColumnIdentifier(colname) {
-  return JSON.stringify(Object.entries(colname).sort(x => x[0]));
+  if (colname instanceof Object)
+    return JSON.stringify(Object.entries(colname).sort(x => x[0]));
+  return colname;
 }
 
 class ConflictingRowsError extends Error {}
