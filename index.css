@@ -1,0 +1,29 @@
+li {
+  font-size: 2em;
+  list-style: none;
+  margin: 1rem 0;
+}
+
+.tbl {
+  display: inline-grid;
+  grid-template-columns: repeat(3, 0.5em);
+  grid-template-rows: repeat(3, 0.5em);
+  vertical-align: middle;
+  border: solid black;
+  border-width: 0 1px 1px 0;
+}
+
+.tbl div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  font-size: 0.5em;
+  border: solid black;
+  border-width: 1px 0 0 1px;
+}
+
+a {
+  color: #07C;
+  text-decoration: none;
+}
