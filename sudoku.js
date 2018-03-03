@@ -110,7 +110,7 @@ function solveSudoku() {
     return;
   }
 
-  ({solutions} = dlx(matrix));
+  solutions = [...dlx(matrix)];
   curSolution = 0;
 
   update();

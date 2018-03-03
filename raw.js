@@ -11,14 +11,17 @@ window.onload = function() {
   run.onclick = function() {
     let matrix = parseMatrix(input.value);
 
-    let {nodes, updates, solutions} = dlx(genMatrix(
+    let dlxMatrix = genMatrix(
       matrix[0].map((_, i) => i),
       matrix.map(row => ({
         cols: row.map((val, i) => val ? i : null).filter(x => x != null)
       }))
-    ));
+    );
 
-    output.value = `${solutions.length} solutions, ${nodes} nodes, ${updates} updates\n\n` +
+    let stats = {};
+    let solutions = [...dlx(dlxMatrix, stats)];
+
+    output.value = `${solutions.length} solutions, ${stats.nodes} nodes, ${stats.updates} updates\n\n` +
       solutions.map(solution =>
         solution.map(row =>
           matrix[0].map((_, i) => row.includes(i) ? '1' : '0').join(' ')

@@ -101,19 +101,22 @@ function getRowColumns(row) {
   return cols;
 }
 
-function dlx(matrix) {
-  let results = {nodes: 1, updates: 0, solutions: []};
+function* dlx(matrix, stats) {
+  if (stats == null)
+    stats = {};
+  stats.nodes = 1;
+  stats.updates = 0;
 
   let root = matrix;
   for (let r = root.right; r !== root; r = r.right) {
-    results.nodes += r.size + 1;
+    stats.nodes += r.size + 1;
   }
 
-  let O = [];
+  let selectedRows = [];
 
-  function search(k) {
+  function* search(k) {
     if (root.right === root) {
-      results.solutions.push(O.map(row => getRowColumns(row)));
+      yield selectedRows.map(row => getRowColumns(row));
       return;
     }
 
@@ -126,12 +129,12 @@ function dlx(matrix) {
 
     cover_col(c);
     for (let r = c.down; r !== c; r = r.down) {
-      O.push(r);
+      selectedRows.push(r);
       for (let j = r.right; j !== r; j = j.right) {
         cover_col(j.column);
       }
-      search(k + 1);
-      O.pop();
+      yield* search(k + 1);
+      selectedRows.pop();
       for (let j = r.left; j !== r; j = j.left) {
         uncover_col(j.column);
       }
@@ -140,12 +143,12 @@ function dlx(matrix) {
   }
 
   function cover_col(c) {
-    results.updates++;
+    stats.updates++;
     c.right.left = c.left;
     c.left.right = c.right;
     for (let i = c.down; i !== c; i = i.down) {
       for (let j = i.right; j !== i; j = j.right) {
-        results.updates++;
+        stats.updates++;
         j.down.up = j.up;
         j.up.down = j.down;
         j.column.size--;
@@ -165,7 +168,5 @@ function dlx(matrix) {
     c.left.right = c;
   }
 
-  search(0);
-
-  return results;
+  yield* search(0);
 }
