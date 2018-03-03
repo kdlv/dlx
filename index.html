@@ -5,12 +5,38 @@
     <meta name="viewport" content="initial-scale=1.0"/>
     <title>Exact cover</title>
     <link href="index.css" rel="stylesheet">
+    <script>
+function shuffle(l) {
+  for (let i = l.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [l[i], l[j]] = [l[j], l[i]];
+  }
+  return l;
+}
+
+window.onload = function() {
+  let nodes = Array.from(document.querySelectorAll('#sudokuTbl *'));
+  shuffle(nodes);
+  nodes.forEach((node, i) => {
+    node.style.gridRow = Math.floor(i / 3) + 1;
+    node.style.gridColumn = i % 3 + 1;
+  });
+
+  nodes = Array.from(document.querySelectorAll('#rawTbl *')).filter(n => n.textContent === '1');
+  shuffle(nodes);
+  let cols = shuffle([1, 2, 3]);
+  nodes.forEach((node, i) => {
+    node.style.gridRow = i + 1;
+    node.style.gridColumn = cols[i];
+  });
+}
+    </script>
   </head>
   <body>
     <ul>
       <li>
         <a href="sudoku.html">
-          <div class="tbl">
+          <div id="sudokuTbl" class="tbl">
             <div>1</div><div>2</div><div>3</div>
             <div>4</div><div>5</div><div>6</div>
             <div>7</div><div>8</div><div>9</div>
@@ -20,7 +46,7 @@
       </li>
       <li>
         <a href="raw.html">
-          <div class="tbl">
+          <div id="rawTbl" class="tbl">
             <div>1</div><div>0</div><div>0</div>
             <div>0</div><div>1</div><div>0</div>
             <div>0</div><div>0</div><div>1</div>
