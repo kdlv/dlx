@@ -27,18 +27,18 @@ table#sudoku {
   height: 100%;
 }
 
-#sudoku .cell:focus {
-  outline: 1px solid black;
-  background: lightblue;
-  caret-color: transparent;
-}
-
 #sudoku .cell.found {
   color: limegreen;
 }
 
 #sudoku .cell.conflict {
   background: #faa;
+}
+
+#sudoku .cell:focus {
+  outline: 1px solid black;
+  background: lightblue;
+  caret-color: transparent;
 }
 
 #prev, #next {
