@@ -43,10 +43,6 @@ function createSudokuGrid() {
     sudoku.appendChild(tr);
     for (let col = 1; col <= 9; col++) {
       let td = document.createElement('td');
-      if (row % 3 == 0)
-        td.classList.add('bottom');
-      if (col % 3 == 0)
-        td.classList.add('right');
       tr.appendChild(td);
 
       let txt = document.createElement('div');

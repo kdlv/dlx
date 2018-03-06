@@ -11,10 +11,10 @@ table#sudoku {
   padding: 0;
 }
 
-#sudoku td.right {
+#sudoku td:nth-child(3n) {
   border-right: 2px solid black;
 }
-#sudoku td.bottom {
+#sudoku tr:nth-child(3n) {
   border-bottom: 2px solid black;
 }
 
