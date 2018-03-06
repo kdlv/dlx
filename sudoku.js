@@ -5,13 +5,10 @@ let controls;
 let run;
 let clear;
 let status;
-let prev;
-let next;
 
 let cells;
 
 let solutions = null;
-let curSolution = null;
 
 window.onload = function() {
   sudoku = document.getElementById('sudoku');
@@ -19,21 +16,11 @@ window.onload = function() {
   run = document.getElementById('run');
   clear = document.getElementById('clear');
   status = document.getElementById('status');
-  next = document.getElementById('next');
-  prev = document.getElementById('prev');
 
   createSudokuGrid();
 
   run.onclick = solveSudoku;
   clear.onclick = clearSudoku;
-  next.onclick = () => {
-    curSolution = Math.min(curSolution + 1, solutions.length - 1)
-    update();
-  }
-  prev.onclick = () => {
-    curSolution = Math.max(curSolution - 1, 0)
-    update();
-  }
 }
 
 function createSudokuGrid() {
@@ -59,12 +46,6 @@ function createSudokuGrid() {
 }
 
 function solveSudoku() {
-  let cellsFilled = cells.filter(c => /^[1-9]$/.test(c.textContent)).length
-  if (cellsFilled < 20) {
-    status.textContent = `Enter at least 20 digits (${20 - cellsFilled} remaining)`;
-    return;
-  }
-
   let matrix;
   try {
     matrix = genMatrix(
@@ -106,8 +87,14 @@ function solveSudoku() {
     return;
   }
 
-  solutions = [...dlx(matrix)];
-  curSolution = 0;
+  let solutionsGen = dlx(matrix);
+  solutions = [];
+  for (let i = 0; i < 2; i++) {
+    let solution = solutionsGen.next().value;
+    if (solution === undefined)
+      break;
+    solutions.push(solution);
+  }
 
   update();
 }
@@ -120,7 +107,6 @@ function onCellInput(e) {
 
     case 81:
       [...e.target.textContent].forEach((d, i) => {
-        cells[i].classList.remove('found');
         if (/^[1-9]$/.test(d))
           cells[i].textContent = d;
         else
@@ -130,7 +116,6 @@ function onCellInput(e) {
       break;
 
     default:
-      e.target.classList.remove('found');
       let val = e.target.textContent;
       let sel = window.getSelection();
       if (sel.focusNode.parentNode === e.target && sel.rangeCount > 0) {
@@ -176,15 +161,18 @@ function update() {
 
   cells.forEach(c => c.classList.remove('found', 'conflict'));
 
-  if (solutions && curSolution != null) {
-    for (let rowCols of solutions[curSolution] || []) {
+  if (solutions) {
+    for (let rowCols of solutions[0] || []) {
       let {row, col, digit} = Object.assign({}, ...rowCols);
       cells[row * 9 + col].textContent = digit;
       cells[row * 9 + col].classList.add('found');
     }
 
-    if (solutions.length > 0) {
-      status.textContent = `Solution ${curSolution + 1}/${solutions.length}`;
+    if (solutions.length === 1) {
+      status.textContent = `Solved`;
+      controls.classList.toggle('solved', true);
+    } else if (solutions.length > 1) {
+      status.textContent = `There is more than one solution`;
       controls.classList.toggle('solved', true);
     } else {
       status.textContent = `No solutions`;

@@ -40,11 +40,3 @@ table#sudoku {
   background: lightblue;
   caret-color: transparent;
 }
-
-#prev, #next {
-  visibility: hidden;
-}
-
-.solved #prev, .solved #next {
-  visibility: visible;
-}
