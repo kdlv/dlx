@@ -1,20 +1,22 @@
 table#sudoku {
-  border: 3px solid black;
-  border-collapse: collapse;
+  border: solid black;
+  border-width: 3px 1px 1px 3px;
+  border-spacing: 0;
   margin: 2mm 0 2mm 0;
 }
 
 #sudoku td {
   height: 2rem;
   width: 2rem;
-  border: 1px solid black;
+  border: solid black;
+  border-width: 0 1px 1px 0;
   padding: 0;
 }
 
 #sudoku td:nth-child(3n) {
   border-right: 2px solid black;
 }
-#sudoku tr:nth-child(3n) {
+#sudoku tr:nth-child(3n) td {
   border-bottom: 2px solid black;
 }
 
