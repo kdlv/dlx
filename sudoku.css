@@ -3,6 +3,8 @@
   --border-outer: 3px;
   --border-inner: 3px;
   --border-cell: 1px;
+
+  --sudoku-side: calc(9*var(--cell-side) + 6*var(--border-cell) + 2*var(--border-inner) + 2*var(--border-outer));
 }
 
 #sudoku {
@@ -10,6 +12,8 @@
   border-width: var(--border-outer);
   border-spacing: 0;
   margin: 2mm 0 2mm 0;
+  width: var(--sudoku-side);
+  height: var(--sudoku-side);
 }
 
 #sudoku td {
@@ -55,4 +59,20 @@
   outline: var(--border-cell) solid black;
   background: lightblue;
   caret-color: transparent;
+}
+
+body {
+  display: grid;
+  grid-template-columns: var(--sudoku-side) auto;
+  grid-template-rows: auto auto;
+  justify-content: center;
+}
+
+#controls {
+  grid-row: 2;
+  width: var(--sudoku-side);
+}
+
+#status {
+  margin: 2mm 0 0 0;
 }
