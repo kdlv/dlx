@@ -76,3 +76,19 @@ body {
 #status {
   margin: 2mm 0 0 0;
 }
+
+#controls button {
+  width: 49%;
+  height: 2rem;
+  border: 1px solid lightblue;
+  border-radius: 3px;
+  background: #f8fdff;
+}
+
+#controls button:hover, #controls button:active {
+  background: lightblue;
+}
+
+#run {
+  float: right;
+}
