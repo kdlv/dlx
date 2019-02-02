@@ -181,11 +181,23 @@ function update() {
 }
 
 function clearSudoku() {
-  controls.classList.toggle('solved', false);
   solutions = null;
   status.textContent = '';
-  cells.forEach(c => {
-    c.classList.remove('found', 'conflict');
-    c.textContent = '';
-  });
+
+  if (!controls.classList.contains('solved')) {
+    cells.forEach(c => {
+      c.classList.remove('found', 'conflict');
+      c.textContent = '';
+    });
+  } else {
+    cells.forEach(c => {
+      c.classList.remove('conflict');
+      if (c.classList.contains('found')) {
+        c.textContent = '';
+        c.classList.remove('found');
+      }
+    });
+  }
+
+  controls.classList.toggle('solved', false);
 }
