@@ -1,5 +1,11 @@
 'use strict';
 
+function parseMatrix(str) {
+  return str.split(/\n+/).filter(l => !l.match(/^ *$/)).map(l => l.split(/ +/)).map(
+    l => l.map(c => c === "0" ? false : true)
+  );
+}
+
 window.onload = function() {
   const inputMatrix = document.getElementById("inputMatrix");
   const runMatrix = document.getElementById("runMatrix");

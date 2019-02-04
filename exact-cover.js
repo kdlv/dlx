@@ -1,11 +1,5 @@
 'use strict';
 
-function parseMatrix(str) {
-  return str.split(/\n+/).filter(l => !l.match(/^ *$/)).map(l => l.split(/ +/)).map(
-    l => l.map(c => c === "0" ? false : true)
-  );
-}
-
 function getColumnIdentifier(colname) {
   if (colname instanceof Object)
     return JSON.stringify(Object.entries(colname).sort(x => x[0]));
