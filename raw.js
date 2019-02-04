@@ -6,10 +6,20 @@ function parseMatrix(str) {
   );
 }
 
+function parseNames(str) {
+  let lines = str.split(/\n+/).map(l => l.trim()).filter(l => l);
+  let columns = lines.shift().split(/ +/);
+  let rows = lines.map(l => l.split(/ +/));
+  return {columns, rows};
+}
+
 window.onload = function() {
   const inputMatrix = document.getElementById("inputMatrix");
   const runMatrix = document.getElementById("runMatrix");
   const outputMatrix = document.getElementById("outputMatrix");
+  const inputNames = document.getElementById("inputNames");
+  const runNames = document.getElementById("runNames");
+  const outputNames = document.getElementById("outputNames");
 
   runMatrix.focus();
   outputMatrix.value = "";
@@ -32,6 +42,22 @@ window.onload = function() {
         solution.map(row =>
           matrix[0].map((_, i) => row.includes(i) ? '1' : '0').join(' ')
         ).join('\n')
+      ).join('\n\n');
+  }
+
+  outputNames.value = "";
+
+  runNames.onclick = function() {
+    let {columns, rows} = parseNames(inputNames.value);
+
+    let dlxNames = genMatrix(columns, rows.map(r => ({cols: r})));
+
+    let stats = {};
+    let solutions = [...dlx(dlxNames, stats)];
+
+    outputNames.value = `${solutions.length} solutions, ${stats.nodes} nodes, ${stats.updates} updates\n\n` +
+      solutions.map(solution =>
+        solution.map(row => row.join(' ')).join('\n')
       ).join('\n\n');
   }
 }
