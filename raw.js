@@ -1,15 +1,15 @@
 'use strict';
 
 window.onload = function() {
-  const input = document.getElementById("input");
-  const run = document.getElementById("run");
-  const output = document.getElementById("output");
+  const inputMatrix = document.getElementById("inputMatrix");
+  const runMatrix = document.getElementById("runMatrix");
+  const outputMatrix = document.getElementById("outputMatrix");
 
-  run.focus();
-  output.value = "";
+  runMatrix.focus();
+  outputMatrix.value = "";
 
-  run.onclick = function() {
-    let matrix = parseMatrix(input.value);
+  runMatrix.onclick = function() {
+    let matrix = parseMatrix(inputMatrix.value);
 
     let dlxMatrix = genMatrix(
       matrix[0].map((_, i) => i),
@@ -21,7 +21,7 @@ window.onload = function() {
     let stats = {};
     let solutions = [...dlx(dlxMatrix, stats)];
 
-    output.value = `${solutions.length} solutions, ${stats.nodes} nodes, ${stats.updates} updates\n\n` +
+    outputMatrix.value = `${solutions.length} solutions, ${stats.nodes} nodes, ${stats.updates} updates\n\n` +
       solutions.map(solution =>
         solution.map(row =>
           matrix[0].map((_, i) => row.includes(i) ? '1' : '0').join(' ')

@@ -10,29 +10,55 @@ textarea {
   width: 90%;
   height: 10em;
 }
-#output {
+.output {
   height: 50em;
+}
+#matrix, #names {
+  float: left;
+  width: 40%;
 }
     </style>
     <script src="exact-cover.js"></script>
     <script src="raw.js"></script>
   </head>
   <body>
-    <div>
-      <textarea id="input" wrap="off">
+    <div id="matrix">
+      <div>
+        <textarea id="inputMatrix" wrap="off">
 0 0 1 0 1 1 0
 1 0 0 1 0 0 1
 0 1 1 0 0 1 0
 1 0 0 1 0 0 0
 0 1 0 0 0 0 1
 0 0 0 1 1 0 1
-      </textarea>
+        </textarea>
+      </div>
+      <div>
+        <button id="runMatrix">Run</button>
+      </div>
+      <div>
+        <textarea id="outputMatrix" class="output" wrap="off"></textarea>
+      </div>
     </div>
-    <div>
-      <button id="run">Run</button>
-    </div>
-    <div>
-      <textarea id="output" wrap="off"></textarea>
+    <div id="names">
+      <div>
+        <textarea id="inputNames" wrap="off">
+A B C D E F G
+
+C E F
+A D G
+B C F
+A D
+B G
+D E G
+        </textarea>
+      </div>
+      <div>
+        <button id="runNames">Run</button>
+      </div>
+      <div>
+        <textarea id="outputNames" class="output" wrap="off"></textarea>
+      </div>
     </div>
   </body>
 </html>
