@@ -1,7 +1,7 @@
 'use strict';
 
 function parseMatrix(str) {
-  return str.split(/\n+/).filter(l => !l.match(/^ *$/)).map(l => l.split(/ +/)).map(
+  return str.split(/\n+/).map(l => l.trim()).filter(l => l).map(l => l.split(/ +/)).map(
     l => l.map(c => c === "0" ? false : true)
   );
 }
