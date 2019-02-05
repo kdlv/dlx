@@ -8,9 +8,9 @@ function parseMatrix(str) {
 
 function parseNames(str) {
   let lines = str.split(/\n+/).map(l => l.trim()).filter(l => l);
-  let columns = lines.shift().split(/ +/);
+  let [columns, columnsSecondary] = lines.shift().split(/\|/, 2).map(cs => cs.trim().split(/ +/));
   let rows = lines.map(l => l.split(/ +/));
-  return {columns, rows};
+  return {columns, columnsSecondary, rows};
 }
 
 window.onload = function() {
@@ -30,6 +30,7 @@ window.onload = function() {
     let stats = {};
     let solutions = [...dlx(
       matrix[0].map((_, i) => i),
+      [],
       matrix.map(row => ({
         cols: row.map((val, i) => val ? i : null).filter(x => x != null)
       })),
@@ -47,10 +48,10 @@ window.onload = function() {
   outputNames.value = "";
 
   runNames.onclick = function() {
-    let {columns, rows} = parseNames(inputNames.value);
+    let {columns, columnsSecondary, rows} = parseNames(inputNames.value);
 
     let stats = {};
-    let solutions = [...dlx(columns, rows.map(r => ({cols: r})), stats)];
+    let solutions = [...dlx(columns, columnsSecondary, rows.map(r => ({cols: r})), stats)];
 
     outputNames.value = `${solutions.length} solutions, ${stats.nodes} nodes, ${stats.updates} updates\n\n` +
       solutions.map(solution =>

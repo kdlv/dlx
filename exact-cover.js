@@ -8,9 +8,12 @@ function getColumnIdentifier(colname) {
 
 class ConflictingRowsError extends Error {}
 
-function genMatrix(columns, rows) {
+function genMatrix(columns, columnsSecondary, rows) {
   let root = {type: 'root'};
   root.left = root.right = root;
+
+  let rootSecondary = {type: 'rootSecondary'};
+  rootSecondary.left = rootSecondary.right = rootSecondary;
 
   let headers = {};
   for (let name of columns) {
@@ -20,6 +23,15 @@ function genMatrix(columns, rows) {
     header.left = root.left;
     root.left.right = header;
     root.left = header;
+    headers[getColumnIdentifier(name)] = header;
+  };
+  for (let name of columnsSecondary) {
+    let header = {type: 'header', name, size: 0};
+    header.up = header.down = header;
+    header.right = rootSecondary;
+    header.left = rootSecondary.left;
+    rootSecondary.left.right = header;
+    rootSecondary.left = header;
     headers[getColumnIdentifier(name)] = header;
   };
 
@@ -95,13 +107,13 @@ function getRowColumns(row) {
   return cols;
 }
 
-function dlx(items, options, stats) {
+function dlx(items, itemsSecondary, options, stats) {
   if (stats == null)
     stats = {};
   stats.nodes = 1;
   stats.updates = 0;
 
-  let root = genMatrix(items, options);
+  let root = genMatrix(items, itemsSecondary, options);
   for (let r = root.right; r !== root; r = r.right) {
     stats.nodes += r.size + 1;
   }
