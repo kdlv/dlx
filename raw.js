@@ -27,15 +27,14 @@ window.onload = function() {
   runMatrix.onclick = function() {
     let matrix = parseMatrix(inputMatrix.value);
 
-    let dlxMatrix = genMatrix(
+    let stats = {};
+    let solutions = [...dlx(
       matrix[0].map((_, i) => i),
       matrix.map(row => ({
         cols: row.map((val, i) => val ? i : null).filter(x => x != null)
-      }))
-    );
-
-    let stats = {};
-    let solutions = [...dlx(dlxMatrix, stats)];
+      })),
+      stats
+    )];
 
     outputMatrix.value = `${solutions.length} solutions, ${stats.nodes} nodes, ${stats.updates} updates\n\n` +
       solutions.map(solution =>
@@ -50,10 +49,8 @@ window.onload = function() {
   runNames.onclick = function() {
     let {columns, rows} = parseNames(inputNames.value);
 
-    let dlxNames = genMatrix(columns, rows.map(r => ({cols: r})));
-
     let stats = {};
-    let solutions = [...dlx(dlxNames, stats)];
+    let solutions = [...dlx(columns, rows.map(r => ({cols: r})), stats)];
 
     outputNames.value = `${solutions.length} solutions, ${stats.nodes} nodes, ${stats.updates} updates\n\n` +
       solutions.map(solution =>

@@ -95,13 +95,13 @@ function getRowColumns(row) {
   return cols;
 }
 
-function* dlx(matrix, stats) {
+function dlx(items, options, stats) {
   if (stats == null)
     stats = {};
   stats.nodes = 1;
   stats.updates = 0;
 
-  let root = matrix;
+  let root = genMatrix(items, options);
   for (let r = root.right; r !== root; r = r.right) {
     stats.nodes += r.size + 1;
   }
@@ -162,5 +162,5 @@ function* dlx(matrix, stats) {
     c.left.right = c;
   }
 
-  yield* search(0);
+  return search(0);
 }

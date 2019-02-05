@@ -46,9 +46,9 @@ function createSudokuGrid() {
 }
 
 function solveSudoku() {
-  let matrix;
+  let solutionsGen;
   try {
-    matrix = genMatrix(
+    solutionsGen = dlx(
       function*() {
         for (let row = 0; row < 9; row++)
           for (let col = 0; col < 9; col++)
@@ -87,7 +87,6 @@ function solveSudoku() {
     return;
   }
 
-  let solutionsGen = dlx(matrix);
   solutions = [];
   for (let i = 0; i < 2; i++) {
     let solution = solutionsGen.next().value;
