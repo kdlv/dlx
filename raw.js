@@ -9,6 +9,7 @@ function parseMatrix(str) {
 function parseNames(str) {
   let lines = str.split(/\n+/).map(l => l.trim()).filter(l => l);
   let [columns, columnsSecondary] = lines.shift().split(/\|/, 2).map(cs => cs.trim().split(/ +/));
+  columnsSecondary = columnsSecondary || [];
   let rows = lines.map(l => l.split(/ +/));
   return {columns, columnsSecondary, rows};
 }
