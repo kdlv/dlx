@@ -13,3 +13,8 @@
   font-size: 2rem;
   text-align: center;
 }
+
+#board tr:nth-child(even) td:nth-child(odd),
+#board tr:nth-child(odd) td:nth-child(even) {
+  background: gray;
+}
