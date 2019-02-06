@@ -54,10 +54,12 @@ function findSolutions() {
 
   let solGen = dlx(
     function*() {
-      for (let row = 0; row < N; row++)
+      for (let c = 0, i = 0; c < N; c++, i = i >= 0 ? -i - 1 : -i) {
+        let row = Math.floor(N / 2) + i;
+        let col = Math.floor(N / 2) + i;
         yield {row};
-      for (let col = 0; col < N; col++)
         yield {col};
+      }
     }(),
     function*() {
       for (let n = 0; n < 2*N - 1; n++) {
