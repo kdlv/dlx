@@ -13,6 +13,12 @@ li {
   border-width: 0 1px 1px 0;
 }
 
+#queensTbl {
+  grid-template-columns: repeat(4, 0.75rem);
+  grid-template-rows: repeat(4, 0.75rem);
+  font-size: 1.4rem;
+}
+
 .tbl div {
   display: flex;
   justify-content: center;
