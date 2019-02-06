@@ -18,3 +18,12 @@
 #board tr:nth-child(odd) td:nth-child(even) {
   background: gray;
 }
+
+a {
+  color: #07C;
+  text-decoration: none;
+}
+
+h1 {
+  margin: 0 0 4px;
+}

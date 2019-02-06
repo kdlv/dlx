@@ -63,13 +63,12 @@
 
 body {
   display: grid;
-  grid-template-columns: var(--sudoku-side) auto;
-  grid-template-rows: auto auto;
+  grid-template-columns: var(--sudoku-side);
+  grid-template-rows: auto auto auto;
   justify-content: center;
 }
 
 #controls {
-  grid-row: 2;
   width: var(--sudoku-side);
 }
 
@@ -91,4 +90,14 @@ body {
 
 #run {
   float: right;
+}
+
+a {
+  color: #07C;
+  text-decoration: none;
+}
+
+h1 {
+  margin: 0;
+  text-align: center;
 }
