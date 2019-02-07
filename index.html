@@ -23,12 +23,15 @@ window.onload = function() {
   });
 
   nodes = Array.from(document.querySelectorAll('#rawTbl *')).filter(n => n.textContent === '1');
-  shuffle(nodes);
   let cols = shuffle([1, 2, 3]);
   nodes.forEach((node, i) => {
     node.style.gridRow = i + 1;
     node.style.gridColumn = cols[i];
   });
+
+  let queensTbl = document.getElementById('queensTbl');
+  if (Math.random() < 0.5)
+    queensTbl.classList.toggle('queens2');
 }
     </script>
   </head>

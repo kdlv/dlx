@@ -19,6 +19,10 @@ li {
   font-size: 1.4rem;
 }
 
+#queensTbl.queens2 {
+  grid-auto-flow: column;
+}
+
 .tbl div {
   display: flex;
   justify-content: center;
