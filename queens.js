@@ -13,17 +13,17 @@ let solutions = [];
 let stats = {};
 
 function createBoard() {
-  [...board.children].forEach(c => c.remove());
+  [...board.childNodes].forEach(c => c.remove());
   txtN.textContent = N;
   cells = [];
 
-  for (let row = 1; row <= N; row++) {
-    let tr = document.createElement('tr');
-    board.appendChild(tr);
-    for (let col = 1; col <= N; col++) {
-      let td = document.createElement('td');
-      tr.appendChild(td);
-      cells.push(td);
+  for (let i = 0; i < N; i++) {
+    let major = document.createElement('div');
+    board.appendChild(major);
+    for (let j = 0; j < N; j++) {
+      let cell = document.createElement('div');
+      major.appendChild(cell);
+      cells.push(cell);
     }
   }
 }
@@ -95,6 +95,6 @@ function displaySolution(solution) {
   for (let c of cells)
     c.textContent = '';
   for (let {row, col} of solution.map(r => Object.assign({}, ...r))) {
-    cells[row*N + col].textContent = 'Q';
+    cells[col*N + row].textContent = '♛';
   }
 }
