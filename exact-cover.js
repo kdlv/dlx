@@ -119,6 +119,7 @@ function dlx(items, itemsSecondary, options, yieldAfterUpdates) {
 
   let solutions = [];
   let selectedRows = [];
+  let levels = [];
 
   function* search(k) {
     stats.nodes++;
@@ -127,7 +128,7 @@ function dlx(items, itemsSecondary, options, yieldAfterUpdates) {
       return;
     }
     if (stats.updates >= nextUpdate) {
-      yield {solutions, nodes: stats.nodes, updates: stats.updates};
+      yield {solutions, nodes: stats.nodes, updates: stats.updates, levels, progress: progress_approx()};
       solutions = [];
       nextUpdate += yieldAfterUpdates;
     }
@@ -138,9 +139,11 @@ function dlx(items, itemsSecondary, options, yieldAfterUpdates) {
       if (j.size < c.size)
         c = j;
     }
+    levels.push({current: null, options: c.size});
 
     cover_col(c);
-    for (let r = c.down; r !== c; r = r.down) {
+    for (let r = c.down, lvlchoice = 1; r !== c; r = r.down) {
+      levels[k].current = lvlchoice++;
       selectedRows.push(r);
       for (let j = r.right; j !== r; j = j.right) {
         cover_col(j.column);
@@ -154,7 +157,8 @@ function dlx(items, itemsSecondary, options, yieldAfterUpdates) {
     uncover_col(c);
 
     if (k === 0)
-      yield {solutions, nodes: stats.nodes, updates: stats.updates};
+      yield {solutions, nodes: stats.nodes, updates: stats.updates, levels, progress: 1};
+    levels.pop();
   }
 
   function cover_col(c) {
@@ -181,6 +185,15 @@ function dlx(items, itemsSecondary, options, yieldAfterUpdates) {
     }
     c.right.left = c;
     c.left.right = c;
+  }
+
+  function progress_approx() {
+    let t = 1, ret = 0;
+    for (let c of levels) {
+      t *= c.options;
+      ret += (c.current - 1) / t;
+    }
+    return ret;
   }
 
   return search(0);

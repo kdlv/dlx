@@ -89,6 +89,11 @@ function findSolutions() {
     solutions = [].concat(solutions, u.solutions);
     nodes = u.nodes;
     updates = u.updates;
+    console.log(`${u.updates.toString().padStart(6)} updates: ${
+      solutions.length.toString().padStart(6)
+    } sols, ${u.progress.toFixed(5)}: ${
+      u.levels.map(x => `${x.current.toString(36)}${x.options.toString(36)}`).join(' ')
+    }`);
   }
 
   console.log(`N: ${N}`);
