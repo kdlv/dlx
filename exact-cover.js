@@ -107,23 +107,29 @@ function getRowColumns(row) {
   return cols;
 }
 
-function dlx(items, itemsSecondary, options, stats) {
-  if (stats == null)
-    stats = {};
-  stats.nodes = 1;
+function dlx(items, itemsSecondary, options, yieldAfterUpdates) {
+  if (yieldAfterUpdates == null)
+    yieldAfterUpdates = 1;
+  let nextUpdate = yieldAfterUpdates;
+  let stats = {};
+  stats.nodes = 0;
   stats.updates = 0;
 
   let root = genMatrix(items, itemsSecondary, options);
-  for (let r = root.right; r !== root; r = r.right) {
-    stats.nodes += r.size + 1;
-  }
 
+  let solutions = [];
   let selectedRows = [];
 
   function* search(k) {
+    stats.nodes++;
     if (root.right === root) {
-      yield selectedRows.map(row => getRowColumns(row));
+      solutions.push(selectedRows.map(row => getRowColumns(row)));
       return;
+    }
+    if (stats.updates >= nextUpdate) {
+      yield {solutions, nodes: stats.nodes, updates: stats.updates};
+      solutions = [];
+      nextUpdate += yieldAfterUpdates;
     }
 
     // Choose a column
@@ -146,6 +152,9 @@ function dlx(items, itemsSecondary, options, stats) {
       }
     }
     uncover_col(c);
+
+    if (k === 0)
+      yield {solutions, nodes: stats.nodes, updates: stats.updates};
   }
 
   function cover_col(c) {

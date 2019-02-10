@@ -28,17 +28,23 @@ window.onload = function() {
   runMatrix.onclick = function() {
     let matrix = parseMatrix(inputMatrix.value);
 
-    let stats = {};
-    let solutions = [...dlx(
+    let gen = dlx(
       matrix[0].map((_, i) => i),
       [],
       matrix.map(row => ({
         cols: row.map((val, i) => val ? i : null).filter(x => x != null)
-      })),
-      stats
-    )];
+      }))
+    );
 
-    outputMatrix.value = `${solutions.length} solutions, ${stats.nodes} nodes, ${stats.updates} updates\n\n` +
+    let solutions = [];
+    let nodes, updates;
+    for (let u of gen) {
+      solutions = [].concat(solutions, u.solutions);
+      nodes = u.nodes;
+      updates = u.updates;
+    }
+
+    outputMatrix.value = `${solutions.length} solutions, ${nodes} nodes, ${updates} updates\n\n` +
       solutions.map(solution =>
         solution.map(row =>
           matrix[0].map((_, i) => row.includes(i) ? '1' : '0').join(' ')
@@ -51,10 +57,17 @@ window.onload = function() {
   runNames.onclick = function() {
     let {columns, columnsSecondary, rows} = parseNames(inputNames.value);
 
-    let stats = {};
-    let solutions = [...dlx(columns, columnsSecondary, rows.map(r => ({cols: r})), stats)];
+    let gen = dlx(columns, columnsSecondary, rows.map(r => ({cols: r})));
 
-    outputNames.value = `${solutions.length} solutions, ${stats.nodes} nodes, ${stats.updates} updates\n\n` +
+    let solutions = [];
+    let nodes, updates;
+    for (let u of gen) {
+      solutions = [].concat(solutions, u.solutions);
+      nodes = u.nodes;
+      updates = u.updates;
+    }
+
+    outputNames.value = `${solutions.length} solutions, ${nodes} nodes, ${updates} updates\n\n` +
       solutions.map(solution =>
         solution.map(row => row.join(' ')).join('\n')
       ).join('\n\n');

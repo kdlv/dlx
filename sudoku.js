@@ -89,11 +89,12 @@ function solveSudoku() {
   }
 
   solutions = [];
-  for (let i = 0; i < 2; i++) {
-    let solution = solutionsGen.next().value;
-    if (solution === undefined)
+  while (solutions.length < 2) {
+    let update = solutionsGen.next().value;
+    if (update === undefined)
       break;
-    solutions.push(solution);
+    for (let solution of update.solutions)
+      solutions.push(solution);
   }
 
   update();

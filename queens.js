@@ -80,15 +80,22 @@ function findSolutions() {
         }
       }
     }(),
-    stats
+    1000
   );
 
-  solutions = [...solGen];
+  let solutions = [];
+  let nodes, updates;
+  for (let u of solGen) {
+    solutions = [].concat(solutions, u.solutions);
+    nodes = u.nodes;
+    updates = u.updates;
+  }
+
+  console.log(`N: ${N}`);
+  console.log(`Solutions: ${solutions.length}`);
+  console.log(`Updates: ${updates}`);
+  console.log(`Nodes: ${nodes}`);
   displaySolution(solutions[0]);
-  console.log(stats);
-  console.log(solutions.length);
-  // let s1 = solGen.next().value;
-  // displaySolution(s1);
 }
 
 function displaySolution(solution) {
