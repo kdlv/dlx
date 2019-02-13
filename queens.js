@@ -6,6 +6,8 @@ let incN;
 let txtN;
 let run;
 
+let dlxControls;
+
 let cells = [];
 
 let N = 8;
@@ -35,78 +37,58 @@ window.onload = function() {
   txtN = document.getElementById('txtN');
   run = document.getElementById('run');
 
+  dlxControls = new DLXControls(
+    () => ({
+      items: [...function*() {
+        for (let c = 0, i = 0; c < N; c++, i = i >= 0 ? -i - 1 : -i) {
+          let row = Math.floor(N / 2) + i;
+          let col = Math.floor(N / 2) + i;
+          yield {row};
+          yield {col};
+        }
+      }()],
+      itemsSecondary: [...function*() {
+        for (let n = 0; n < 2*N - 1; n++) {
+          yield {diag: n};
+          yield {diag: -n};
+        }
+      }()],
+      options: [...function*() {
+        for (let row = 0; row < N; row++) {
+          for (let col = 0; col < N; col++) {
+            yield {
+              cols: [
+                {row}, {col},
+                {diag: row + col},
+                {diag: -(N-1 - row) - col}
+              ]
+            };
+          }
+        }
+      }()],
+      yieldAfterUpdates: 100000
+    }),
+    displaySolution
+  );
+
   decN.onclick = () => {
+    dlxControls.reset();
     N = Math.max(1, N - 1);
     createBoard();
   };
   incN.onclick = () => {
+    dlxControls.reset();
     N++;
     createBoard();
   };
 
-  run.onclick = findSolutions;
-
   createBoard();
-}
-
-function findSolutions() {
-  stats = {};
-
-  let solGen = dlx(
-    function*() {
-      for (let c = 0, i = 0; c < N; c++, i = i >= 0 ? -i - 1 : -i) {
-        let row = Math.floor(N / 2) + i;
-        let col = Math.floor(N / 2) + i;
-        yield {row};
-        yield {col};
-      }
-    }(),
-    function*() {
-      for (let n = 0; n < 2*N - 1; n++) {
-        yield {diag: n};
-        yield {diag: -n};
-      }
-    }(),
-    function*() {
-      for (let row = 0; row < N; row++) {
-        for (let col = 0; col < N; col++) {
-          yield {
-            cols: [
-              {row}, {col},
-              {diag: row + col},
-              {diag: -(N-1 - row) - col}
-            ]
-          };
-        }
-      }
-    }(),
-    1000
-  );
-
-  let solutions = [];
-  let nodes, updates;
-  for (let u of solGen) {
-    solutions = [].concat(solutions, u.solutions);
-    nodes = u.nodes;
-    updates = u.updates;
-    console.log(`${u.updates.toString().padStart(6)} updates: ${
-      solutions.length.toString().padStart(6)
-    } sols, ${u.progress.toFixed(5)}: ${
-      u.levels.map(x => `${x.current.toString(36)}${x.options.toString(36)}`).join(' ')
-    }`);
-  }
-
-  console.log(`N: ${N}`);
-  console.log(`Solutions: ${solutions.length}`);
-  console.log(`Updates: ${updates}`);
-  console.log(`Nodes: ${nodes}`);
-  displaySolution(solutions[0]);
 }
 
 function displaySolution(solution) {
   for (let c of cells)
     c.textContent = '';
-  for (let {row, col} of solution.map(r => Object.assign({}, ...r))) {
+  for (let {row, col} of (solution || []).map(r => Object.assign({}, ...r))) {
     cells[col*N + row].textContent = '♛';
   }
 }

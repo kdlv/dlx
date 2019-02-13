@@ -1,5 +1,6 @@
 #board {
   display: flex;
+  margin-top: 4px;
 }
 
 #board * * {
@@ -16,6 +17,15 @@
 #board *:nth-child(even) *:nth-child(odd),
 #board *:nth-child(odd) *:nth-child(even) {
   background: gray;
+}
+
+.dlxcontrols {
+  display: flex;
+  align-items: center;
+}
+
+#controlsShowingSol {
+  margin-left: 4px;
 }
 
 a {

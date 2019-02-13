@@ -6,6 +6,7 @@
     <title>Queens</title>
     <link href="queens.css" rel="stylesheet">
     <script src="exact-cover.js"></script>
+    <script src="dlxcontrols.js"></script>
     <script src="queens.js"></script>
   </head>
   <body>
@@ -14,8 +15,16 @@
       <button id="decN">-</button>
       <span id="txtN"></span>
       <button id="incN">+</button>
-      <button id="run">Run</button>
-      <p id="status"></p>
+      <button id="controlsRun">Run</button>
+      <div>Solutions: <span id="controlsSolutions">-</span></div>
+      <div>Search tree nodes: <span id="controlsNodes">-</span></div>
+      <div>Progress: <span id="controlsProgress">-</span></div>
+      <div class="dlxcontrols">
+        <button id="controlsSolsPrev">&lt;</button>
+        <input id="controlsSolsRange" type="range" min="1" max="1" value="1">
+        <button id="controlsSolsNext">&gt;</button>
+        <span id="controlsShowingSol">-</span>
+      </div>
     </div>
     <div id="board">
     </div>
