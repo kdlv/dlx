@@ -13,7 +13,12 @@ function parseNames(str) {
   columns = columns.map(n => ({n}));
   columnsSecondary = columnsSecondary.map(n => ({n, _secondary: true}));
   let rows = lines.map(l => l.split(/ +/));
-  rows = rows.map(r => ({cols: r.map(n => ({n}))}));
+  rows = rows.map(r => ({
+    cols: r.map(c => {
+      let [n, _color] = c.split(':');
+      return {n, _color};
+    })
+  }));
   return {columns, columnsSecondary, rows};
 }
 
@@ -71,7 +76,7 @@ window.onload = function() {
 
     outputNames.value = `${solutions.length} solutions, ${nodes} nodes, ${updates} updates\n\n` +
       solutions.map(solution =>
-        solution.map(row => row.map(c => c.n).join(' ')).join('\n')
+        solution.map(row => row.map(c => c.n + (c._color != null ? `:${c._color}` : '')).join(' ')).join('\n')
       ).join('\n\n');
   }
 }

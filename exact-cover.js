@@ -40,10 +40,13 @@ function genMatrix(columns, rows) {
   for (let {include, cols} of rows) {
     let firstThisRow = null;
     for (let colName of cols) {
+      let color = colName._color;
       colName = removeMeta(colName);
       let col = headers[getColumnIdentifier(colName)];
 
       let cell = {type: 'cell', column: col};
+      if (color != null)
+        cell.color = color;
 
       // Insert cell left of firstThisRow (i.e. last)
       if (firstThisRow === null) {
@@ -101,7 +104,7 @@ function getRowColumns(row) {
   let cols = [];
   let r = row;
   do {
-    cols.push(r.column.name);
+    cols.push(Object.assign({}, r.column.name));
     r = r.right;
   } while (r !== row);
   return cols;
@@ -146,12 +149,18 @@ function dlx(items, options, yieldAfterUpdates) {
       levels[k].current = lvlchoice++;
       selectedRows.push(r);
       for (let j = r.right; j !== r; j = j.right) {
-        cover_col(j.column);
+        if (j.color === undefined)
+          cover_col(j.column);
+        else if (j.color !== null)
+          purify(j);
       }
       yield* search(k + 1);
       selectedRows.pop();
       for (let j = r.left; j !== r; j = j.left) {
-        uncover_col(j.column);
+        if (j.color === undefined)
+          uncover_col(j.column);
+        else if (j.color !== null)
+          unpurify(j);
       }
     }
     uncover_col(c);
@@ -161,27 +170,59 @@ function dlx(items, options, yieldAfterUpdates) {
     levels.pop();
   }
 
+  function purify(p) {
+    p.column.name._color = p.color;
+    for (let q = p.column.down; q !== p.column; q = q.down) {
+      if (q.color !== p.color)
+        hide(q);
+      else
+        q.color = null;
+    }
+  }
+
+  function unpurify(p) {
+    p.column.name._color = undefined;
+    for (let q = p.column.down; q !== p.column; q = q.down) {
+      if (q.color === null)
+        q.color = p.color;
+      else
+        unhide(q);
+    }
+  }
+
+  function hide(p) {
+    for (let j = p.right; j !== p; j = j.right) {
+      if (j.color === null)
+        continue;
+      stats.updates++;
+      j.down.up = j.up;
+      j.up.down = j.down;
+      j.column.size--;
+    }
+  }
+
+  function unhide(p) {
+    for (let j = p.left; j !== p; j = j.left) {
+      if (j.color === null)
+        continue;
+      j.column.size++;
+      j.down.up = j;
+      j.up.down = j;
+    }
+  }
+
   function cover_col(c) {
     stats.updates++;
     c.right.left = c.left;
     c.left.right = c.right;
     for (let i = c.down; i !== c; i = i.down) {
-      for (let j = i.right; j !== i; j = j.right) {
-        stats.updates++;
-        j.down.up = j.up;
-        j.up.down = j.down;
-        j.column.size--;
-      }
+      hide(i);
     }
   }
 
   function uncover_col(c) {
     for (let i = c.up; i !== c; i = i.up) {
-      for (let j = i.left; j !== i; j = j.left) {
-        j.column.size++;
-        j.down.up = j;
-        j.up.down = j;
-      }
+      unhide(i);
     }
     c.right.left = c;
     c.left.right = c;
