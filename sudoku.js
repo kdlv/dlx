@@ -63,7 +63,6 @@ function solveSudoku() {
           for (let digit = 1; digit <= 9; digit++)
             yield {box, digit};
       }(),
-      [],
       function*() {
         for (let row = 0; row < 9; row++)
           for (let col = 0; col < 9; col++)

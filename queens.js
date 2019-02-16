@@ -46,11 +46,9 @@ window.onload = function() {
           yield {row};
           yield {col};
         }
-      }()],
-      itemsSecondary: [...function*() {
         for (let n = 0; n < 2*N - 1; n++) {
-          yield {diag: n};
-          yield {diag: -n};
+          yield {_secondary: true, diag: n};
+          yield {_secondary: true, diag: -n};
         }
       }()],
       options: [...function*() {

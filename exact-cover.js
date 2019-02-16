@@ -6,34 +6,33 @@ function getColumnIdentifier(colname) {
   return colname;
 }
 
+function removeMeta(colname) {
+  if (colname instanceof Object)
+    return Object.fromEntries(Object.entries(colname).filter(e => e[0][0] !== '_'));
+  return colname;
+}
+
 class ConflictingRowsError extends Error {}
 
-function genMatrix(columns, columnsSecondary, rows) {
+function genMatrix(columns, rows) {
   let root = {type: 'root'};
   root.left = root.right = root;
 
-  let rootSecondary = {type: 'rootSecondary'};
+  let rootSecondary = {type: 'root'};
   rootSecondary.left = rootSecondary.right = rootSecondary;
 
   let headers = {};
   for (let name of columns) {
+    let r = name._secondary ? rootSecondary : root;
+    name = removeMeta(name);
     let header = {type: 'header', name, size: 0};
     header.up = header.down = header;
-    header.right = root;
-    header.left = root.left;
-    root.left.right = header;
-    root.left = header;
+    header.right = r;
+    header.left = r.left;
+    r.left.right = header;
+    r.left = header;
     headers[getColumnIdentifier(name)] = header;
-  };
-  for (let name of columnsSecondary) {
-    let header = {type: 'header', name, size: 0};
-    header.up = header.down = header;
-    header.right = rootSecondary;
-    header.left = rootSecondary.left;
-    rootSecondary.left.right = header;
-    rootSecondary.left = header;
-    headers[getColumnIdentifier(name)] = header;
-  };
+  }
 
   let included = [];
 
@@ -41,6 +40,7 @@ function genMatrix(columns, columnsSecondary, rows) {
   for (let {include, cols} of rows) {
     let firstThisRow = null;
     for (let colName of cols) {
+      colName = removeMeta(colName);
       let col = headers[getColumnIdentifier(colName)];
 
       let cell = {type: 'cell', column: col};
@@ -107,7 +107,7 @@ function getRowColumns(row) {
   return cols;
 }
 
-function dlx(items, itemsSecondary, options, yieldAfterUpdates) {
+function dlx(items, options, yieldAfterUpdates) {
   if (yieldAfterUpdates == null)
     yieldAfterUpdates = 1;
   let nextUpdate = yieldAfterUpdates;
@@ -115,7 +115,7 @@ function dlx(items, itemsSecondary, options, yieldAfterUpdates) {
   stats.nodes = 0;
   stats.updates = 0;
 
-  let root = genMatrix(items, itemsSecondary, options);
+  let root = genMatrix(items, options);
 
   let solutions = [];
   let selectedRows = [];

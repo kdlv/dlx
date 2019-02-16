@@ -10,7 +10,10 @@ function parseNames(str) {
   let lines = str.split(/\n+/).map(l => l.trim()).filter(l => l);
   let [columns, columnsSecondary] = lines.shift().split(/\|/, 2).map(cs => cs.trim().split(/ +/));
   columnsSecondary = columnsSecondary || [];
+  columns = columns.map(n => ({n}));
+  columnsSecondary = columnsSecondary.map(n => ({n, _secondary: true}));
   let rows = lines.map(l => l.split(/ +/));
+  rows = rows.map(r => ({cols: r.map(n => ({n}))}));
   return {columns, columnsSecondary, rows};
 }
 
@@ -30,7 +33,6 @@ window.onload = function() {
 
     let gen = dlx(
       matrix[0].map((_, i) => i),
-      [],
       matrix.map(row => ({
         cols: row.map((val, i) => val ? i : null).filter(x => x != null)
       }))
@@ -57,7 +59,7 @@ window.onload = function() {
   runNames.onclick = function() {
     let {columns, columnsSecondary, rows} = parseNames(inputNames.value);
 
-    let gen = dlx(columns, columnsSecondary, rows.map(r => ({cols: r})));
+    let gen = dlx(Array.concat(columns, columnsSecondary), rows);
 
     let solutions = [];
     let nodes, updates;
@@ -69,7 +71,7 @@ window.onload = function() {
 
     outputNames.value = `${solutions.length} solutions, ${nodes} nodes, ${updates} updates\n\n` +
       solutions.map(solution =>
-        solution.map(row => row.join(' ')).join('\n')
+        solution.map(row => row.map(c => c.n).join(' ')).join('\n')
       ).join('\n\n');
   }
 }
