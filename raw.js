@@ -64,7 +64,7 @@ window.onload = function() {
   runNames.onclick = function() {
     let {columns, columnsSecondary, rows} = parseNames(inputNames.value);
 
-    let gen = dlx(Array.concat(columns, columnsSecondary), rows);
+    let gen = dlx([].concat(columns, columnsSecondary), rows);
 
     let solutions = [];
     let nodes, updates;

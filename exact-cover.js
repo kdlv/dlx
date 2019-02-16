@@ -8,7 +8,8 @@ function getColumnIdentifier(colname) {
 
 function removeMeta(colname) {
   if (colname instanceof Object)
-    return Object.fromEntries(Object.entries(colname).filter(e => e[0][0] !== '_'));
+    for (let k of Object.keys(colname).filter(k => k[0] == '_'))
+      delete colname[k];
   return colname;
 }
 
