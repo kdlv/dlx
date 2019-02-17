@@ -13,10 +13,6 @@ textarea {
 .output {
   height: 50em;
 }
-#matrix, #names {
-  float: left;
-  width: 40%;
-}
 
 a {
   color: #07C;
@@ -38,27 +34,8 @@ h1 {
   </head>
   <body>
     <h1><a href="index.html">DLX</a> &gt; Raw</h1>
-    <div id="matrix">
-      <div>
-        <textarea id="inputMatrix" wrap="off">
-0 0 1 0 1 1 0
-1 0 0 1 0 0 1
-0 1 1 0 0 1 0
-1 0 0 1 0 0 0
-0 1 0 0 0 0 1
-0 0 0 1 1 0 1
-        </textarea>
-      </div>
-      <div>
-        <button id="runMatrix">Run</button>
-      </div>
-      <div>
-        <textarea id="outputMatrix" class="output" wrap="off"></textarea>
-      </div>
-    </div>
-    <div id="names">
-      <div>
-        <textarea id="inputNames" wrap="off">
+    <div>
+      <textarea id="inputNames" wrap="off">
 A B C D E F G
 
 C E F
@@ -67,23 +44,22 @@ B C F
 A D
 B G
 D E G
-        </textarea>
+      </textarea>
+    </div>
+    <div>
+      <div>Solutions: <span id="controlsSolutions">-</span></div>
+      <div>Search tree nodes: <span id="controlsNodes">-</span></div>
+      <div>Progress: <span id="controlsProgress">-</span></div>
+      <div class="dlxcontrols">
+        <button id="controlsSolsPrev">&lt;</button>
+        <input id="controlsSolsRange" type="range" min="1" max="1" value="1">
+        <button id="controlsSolsNext">&gt;</button>
+        <span id="controlsShowingSol">-</span>
       </div>
-      <div>
-        <div>Solutions: <span id="controlsSolutions">-</span></div>
-        <div>Search tree nodes: <span id="controlsNodes">-</span></div>
-        <div>Progress: <span id="controlsProgress">-</span></div>
-        <div class="dlxcontrols">
-          <button id="controlsSolsPrev">&lt;</button>
-          <input id="controlsSolsRange" type="range" min="1" max="1" value="1">
-          <button id="controlsSolsNext">&gt;</button>
-          <span id="controlsShowingSol">-</span>
-        </div>
-        <button id="controlsRun">Run</button>
-      </div>
-      <div>
-        <textarea id="outputNames" class="output" wrap="off"></textarea>
-      </div>
+      <button id="controlsRun">Run</button>
+    </div>
+    <div>
+      <textarea id="outputNames" class="output" wrap="off"></textarea>
     </div>
   </body>
 </html>
