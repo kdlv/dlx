@@ -1,5 +1,7 @@
 'use strict';
 
+let dlxControls;
+
 function parseMatrix(str) {
   return str.split(/\n+/).map(l => l.trim()).filter(l => l).map(l => l.split(/ +/)).map(
     l => l.map(c => c === "0" ? false : true)
@@ -27,7 +29,6 @@ window.onload = function() {
   const runMatrix = document.getElementById("runMatrix");
   const outputMatrix = document.getElementById("outputMatrix");
   const inputNames = document.getElementById("inputNames");
-  const runNames = document.getElementById("runNames");
   const outputNames = document.getElementById("outputNames");
 
   runMatrix.focus();
@@ -61,22 +62,19 @@ window.onload = function() {
 
   outputNames.value = "";
 
-  runNames.onclick = function() {
-    let {columns, columnsSecondary, rows} = parseNames(inputNames.value);
-
-    let gen = dlx([].concat(columns, columnsSecondary), rows);
-
-    let solutions = [];
-    let nodes, updates;
-    for (let u of gen) {
-      solutions = [].concat(solutions, u.solutions);
-      nodes = u.nodes;
-      updates = u.updates;
+  dlxControls = new DLXControls(
+    () => {
+      let {columns, columnsSecondary, rows} = parseNames(inputNames.value);
+      return {
+        items: [].concat(columns, columnsSecondary),
+        options: rows,
+        yieldAfterUpdates: 1000000
+      };
+    },
+    (sol) => {
+      if (sol == null)
+        return;
+      outputNames.value = sol.map(row => row.map(c => c.n + (c._color != null ? `:${c._color}` : '')).join(' ')).join('\n');
     }
-
-    outputNames.value = `${solutions.length} solutions, ${nodes} nodes, ${updates} updates\n\n` +
-      solutions.map(solution =>
-        solution.map(row => row.map(c => c.n + (c._color != null ? `:${c._color}` : '')).join(' ')).join('\n')
-      ).join('\n\n');
-  }
+  );
 }
