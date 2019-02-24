@@ -14,6 +14,10 @@
   background: lightgray;
 }
 
+#board * .queen::after {
+  content: '♛';
+}
+
 #board *:nth-child(even) *:nth-child(odd),
 #board *:nth-child(odd) *:nth-child(even) {
   background: gray;

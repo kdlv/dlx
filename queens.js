@@ -85,8 +85,8 @@ window.onload = function() {
 
 function displaySolution(solution) {
   for (let c of cells)
-    c.textContent = '';
+    c.classList.remove('queen');
   for (let {row, col} of (solution || []).map(r => Object.assign({}, ...r))) {
-    cells[col*N + row].textContent = '♛';
+    cells[col*N + row].classList.add('queen');
   }
 }
