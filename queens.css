@@ -18,6 +18,18 @@
   content: '♛';
 }
 
+#board * .noqueen::after {
+  content: '×';
+}
+
+#board * .manual {
+  color: #07C;
+}
+
+#board * .conflict {
+  background: #faa !important;
+}
+
 #board *:nth-child(even) *:nth-child(odd),
 #board *:nth-child(odd) *:nth-child(even) {
   background: gray;

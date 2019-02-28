@@ -1,9 +1,10 @@
 'use strict';
 
 class DLXControls {
-  constructor(runCB, displaySolutionCB) {
+  constructor(runCB, displaySolutionCB, conflictCB) {
     this.runCB = runCB;
     this.displaySolutionCB = displaySolutionCB;
+    this.conflictCB = conflictCB;
 
     this.controlsRun = document.getElementById('controlsRun');
     this.controlsProgress = document.getElementById('controlsProgress');
@@ -17,7 +18,10 @@ class DLXControls {
     this.saveSolutions = 1000;
 
     this.controlsRun.onclick = () => {
-      this.run();
+      if (this.solutions == null)
+        this.run();
+      else
+        this.reset();
     };
 
     this.controlsSolsRange.oninput = () => {
@@ -51,7 +55,16 @@ class DLXControls {
 
     this.dlxworker = new Worker('dlxworker.js');
     this.dlxworker.onmessage = (e) => {
-      let {solutions, updates, progress, nodes} = e.data;
+      let {conflict, solutions, updates, progress, nodes} = e.data;
+
+      if (conflict) {
+        let o1 = Object.assign(...conflict.row1);
+        let o2 = Object.assign(...conflict.row2);
+        this.reset();
+        this.conflictCB(o1, o2);
+        return;
+      }
+
       this.updates = updates;
       this.progress = progress;
       this.nodes = nodes;
@@ -119,5 +132,10 @@ class DLXControls {
       this.controlsShowingSol.textContent = this.showingSol + 1;
     else
       this.controlsShowingSol.textContent = '-';
+
+    if (this.solutions == null)
+      this.controlsRun.textContent = 'Run';
+    else
+      this.controlsRun.textContent = 'Reset';
   }
 }

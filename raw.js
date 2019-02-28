@@ -34,8 +34,10 @@ window.onload = function() {
       };
     },
     (sol) => {
-      if (sol == null)
+      if (sol == null) {
+        outputNames.value = '';
         return;
+      }
       outputNames.value = sol.map(row => row.map(c => c.n + (c._color != null ? `:${c._color}` : '')).join(' ')).join('\n');
     }
   );
